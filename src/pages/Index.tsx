@@ -1,8 +1,11 @@
+
 import React, { useState } from 'react';
 import { WeatherCard } from '@/components/WeatherCard';
 import { CitySearch } from '@/components/CitySearch';
 import { WeatherData } from '@/types/weather';
 import { getWeatherBackground } from '@/utils/weatherBackground';
+import { processWeatherData } from '@/services/weatherService';
+import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -11,32 +14,22 @@ const Index = () => {
   const handleCitySelect = async (city: string) => {
     setLoading(true);
     try {
-      // Hier würden wir normalerweise die DWD API aufrufen
-      // Für Demo-Zwecke verwenden wir Mock-Daten
-      const mockData: WeatherData = {
-        city: city,
-        temperature: Math.round(Math.random() * 30 + 5),
-        condition: ['sunny', 'cloudy', 'rainy', 'windy'][Math.floor(Math.random() * 4)] as any,
-        humidity: Math.round(Math.random() * 40 + 40),
-        windSpeed: Math.round(Math.random() * 20 + 5),
-        pressure: Math.round(Math.random() * 50 + 1000),
-        feelsLike: Math.round(Math.random() * 30 + 5),
-        uvIndex: Math.round(Math.random() * 10),
-        visibility: Math.round(Math.random() * 20 + 10),
-        forecast: Array.from({ length: 5 }, (_, i) => ({
-          day: ['Mo', 'Di', 'Mi', 'Do', 'Fr'][i],
-          high: Math.round(Math.random() * 25 + 10),
-          low: Math.round(Math.random() * 15 + 5),
-          condition: ['sunny', 'cloudy', 'rainy', 'windy'][Math.floor(Math.random() * 4)] as any
-        }))
-      };
-      
-      setTimeout(() => {
-        setWeatherData(mockData);
-        setLoading(false);
-      }, 1000);
+      console.log('Lade Wetterdaten für:', city);
+      const data = await processWeatherData(city);
+      console.log('Erhaltene Wetterdaten:', data);
+      setWeatherData(data);
+      toast({
+        title: "Wetterdaten geladen",
+        description: `Aktuelle Daten für ${city} wurden erfolgreich abgerufen.`,
+      });
     } catch (error) {
       console.error('Fehler beim Laden der Wetterdaten:', error);
+      toast({
+        title: "Fehler",
+        description: error instanceof Error ? error.message : "Wetterdaten konnten nicht geladen werden.",
+        variant: "destructive",
+      });
+    } finally {
       setLoading(false);
     }
   };
@@ -60,7 +53,7 @@ const Index = () => {
             Wetter
           </h1>
           <p className="text-xl text-white/80 font-light">
-            Präzise Wettervorhersagen für Deutschland
+            Präzise Wettervorhersagen weltweit
           </p>
         </div>
 
