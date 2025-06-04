@@ -1,5 +1,4 @@
-
-const API_KEY = '803c0fe552b296e7ddebd455c1da4366';
+const API_KEY = 'HIER_IHREN_NEUEN_WEATHER_API_SCHLÜSSEL_EINFÜGEN';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 
 export interface OpenWeatherResponse {
