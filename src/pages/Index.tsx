@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import { WeatherCard } from '@/components/WeatherCard';
 import { CitySearch } from '@/components/CitySearch';
 import { WeatherData } from '@/types/weather';
+import { getWeatherBackground } from '@/utils/weatherBackground';
 
 const Index = () => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -41,8 +41,12 @@ const Index = () => {
     }
   };
 
+  const backgroundClass = weatherData 
+    ? getWeatherBackground(weatherData.condition)
+    : 'bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 relative overflow-hidden">
+    <div className={`min-h-screen ${backgroundClass} relative overflow-hidden transition-all duration-1000`}>
       {/* Animated background elements */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-20 left-20 w-64 h-64 bg-white rounded-full mix-blend-overlay filter blur-xl animate-pulse"></div>
